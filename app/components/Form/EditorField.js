@@ -1,7 +1,12 @@
 // @flow
 import React from 'react';
 import cx from 'classnames';
-import Editor from 'app/components/Editor';
+import Editor from '@webkom/lego-editor';
+import '@webkom/lego-editor/dist/Editor.css';
+import '@webkom/lego-editor/dist/components/Toolbar.css';
+import '@webkom/lego-editor/dist/components/ImageUpload.css';
+import 'react-image-crop/dist/ReactCrop.css';
+import { uploadFile } from 'app/actions/FileActions';
 import { createField } from './Field';
 import styles from './TextInput.css';
 
@@ -13,17 +18,7 @@ type Props = {
   name: string
 };
 
-class NoSSRError {
-  error: Error;
-  constructor(msg) {
-    this.error = new Error(msg);
-  }
-}
-
 function EditorField({ className, name, ...props }: Props) {
-  if (!__CLIENT__) {
-    throw new NoSSRError('Cannot SSR editor');
-  }
   return (
     <div name={name}>
       <Editor
@@ -31,10 +26,11 @@ function EditorField({ className, name, ...props }: Props) {
         {...props}
         {...props.input}
         {...props.meta}
+        uploadFile={uploadFile}
       />
     </div>
   );
 }
 
-EditorField.Field = createField(EditorField);
+EditorField.Field = createField(EditorField, false);
 export default EditorField;
