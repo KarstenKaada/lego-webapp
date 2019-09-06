@@ -138,7 +138,7 @@ class JoinEventForm extends Component<Props> {
       registration,
       currentUser,
       handleSubmit,
-      onToken,
+      onPaymentMethod,
       invalid,
       pristine,
       submitting,
@@ -180,7 +180,7 @@ class JoinEventForm extends Component<Props> {
         <>
           {!formOpen && registration && showStripe && (
             <PaymentRequestForm
-              onToken={onToken}
+              paymentMethod={onPaymentMethod}
               event={event}
               currentUser={currentUser}
               chargeStatus={registration.chargeStatus}
@@ -293,7 +293,7 @@ class JoinEventForm extends Component<Props> {
                           />
                           {registration && showStripe && (
                             <PaymentRequestForm
-                              onToken={onToken}
+                              onPaymentMethod={onPaymentMethod}
                               event={event}
                               currentUser={currentUser}
                               chargeStatus={registration.chargeStatus}
