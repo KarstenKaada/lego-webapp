@@ -26,7 +26,7 @@ export type Props = {
   registration: ?Object,
   currentUser: Object,
   onSubmit: Object => void,
-  onToken: () => Promise<*>,
+  onPaymentMethod: () => Promise<*>,
 
   handleSubmit: /*TODO: SubmitHandler<>*/ any => void,
 
@@ -239,7 +239,7 @@ class JoinEventForm extends Component<Props> {
                         id={feedbackName}
                         placeholder="Melding til arrangører"
                         name={feedbackName}
-                        component={TextEditor.Field}
+                        component={TextInput.Field}
                         labelClassName={styles.feedbackLabel}
                         className={styles.feedbackText}
                         fieldClassName={styles.feedbackField}
@@ -291,18 +291,6 @@ class JoinEventForm extends Component<Props> {
                             title={title || joinTitle}
                             showPenaltyNotice={showPenaltyNotice}
                           />
-                          {registration && showStripe && (
-                        <div style={{ width: '100%' }}>
-                          <div className={styles.joinHeader}>Betaling</div>
-                          Du skal betale 254,-
-                            <PaymentRequestForm
-                              onPaymentMethod={onPaymentMethod}
-                              event={event}
-                              currentUser={currentUser}
-                              chargeStatus={registration.chargeStatus}
-                            />
-                        </div>
-                          )}
                         </Flex>
                         {!registration && (
                           <SpotsLeft
@@ -319,6 +307,18 @@ class JoinEventForm extends Component<Props> {
                       />
                     )}
                   </Form>
+                  {registration && showStripe && (
+                    <div style={{ width: '100%' }}>
+                      <div className={styles.joinHeader}>Betaling</div>
+                      Du skal betale 254,-
+                      <PaymentRequestForm
+                        onPaymentMethod={onPaymentMethod}
+                        event={event}
+                        currentUser={currentUser}
+                        chargeStatus={registration.chargeStatus}
+                      />
+                    </div>
+                  )}
                 </Flex>
               )}
             </>
