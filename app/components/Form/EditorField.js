@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import cx from 'classnames';
 import Editor from '@webkom/lego-editor';
 import '@webkom/lego-editor/dist/Editor.css';
@@ -15,10 +16,23 @@ type Props = {
   className?: string,
   input: any,
   meta: any,
-  name: string
+  name: string,
+  uploadFile: (file: Blob) => Promise<*>
 };
 
-function EditorField({ className, name, ...props }: Props) {
+const mapDispatchToProps = dispatch => {
+  return {
+    uploadFile: async file => dispatch(uploadFile({ file, isPublic: true })).then(await {})
+  };
+};
+
+const EditorFieldComponent = ({
+  className,
+  name,
+  uploadFile,
+  ...props
+}: Props) => {
+  console.log(uploadFile);
   return (
     <div name={name}>
       <Editor
@@ -26,11 +40,20 @@ function EditorField({ className, name, ...props }: Props) {
         {...props}
         {...props.input}
         {...props.meta}
-        uploadFile={uploadFile}
+        imageUpload={uploadFile}
       />
     </div>
   );
-}
+};
 
-EditorField.Field = createField(EditorField, false);
+const EditorField = connect(
+  null,
+  mapDispatchToProps
+)(EditorFieldComponent);
+
+EditorField.Field = connect(
+  null,
+  mapDispatchToProps
+)(createField(EditorFieldComponent, false));
+
 export default EditorField;

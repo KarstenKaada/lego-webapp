@@ -52,9 +52,10 @@ export function uploadFile({
   isPublic = false,
   timeout
 }: UploadArgs): Thunk<*> {
+  console.log(file);
   return dispatch =>
     dispatch(fetchSignedPost(fileName || file.name, isPublic)).then(action => {
-      if (!action || !action.payload) return;
+      console.log(action);
       return dispatch(
         callAPI({
           types: FileType.UPLOAD,
