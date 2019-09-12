@@ -90,3 +90,17 @@
 .registrationSection {
   flex-wrap: wrap-reverse;
 }
+
+.eventPrice {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.eventPrice::after {
+  width: 70%;
+  display: block;
+  content: '';
+  margin: 0 auto;
+  border-bottom: 1px solid #6772e585;
+}

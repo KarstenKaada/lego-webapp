@@ -310,7 +310,9 @@ class JoinEventForm extends Component<Props> {
                   {registration && showStripe && (
                     <div style={{ width: '100%' }}>
                       <div className={styles.joinHeader}>Betaling</div>
-                      Du skal betale {event.price / 100},-
+                      <div className={styles.eventPrice}>
+                        Du skal betale {event.price / 100},-
+                      </div>
                       <PaymentRequestForm
                         createPaymentIntent={createPaymentIntent}
                         event={event}
