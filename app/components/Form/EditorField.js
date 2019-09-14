@@ -22,7 +22,10 @@ type Props = {
 
 const mapDispatchToProps = dispatch => {
   return {
-    uploadFile: async file => dispatch(uploadFile({ file, isPublic: true })).then(await {})
+    uploadFile: async file => {
+      const response = await dispatch(uploadFile({ file, isPublic: true }));
+      return { fileKey: response.meta.fileKey };
+    }
   };
 };
 
@@ -32,7 +35,6 @@ const EditorFieldComponent = ({
   uploadFile,
   ...props
 }: Props) => {
-  console.log(uploadFile);
   return (
     <div name={name}>
       <Editor
@@ -51,6 +53,7 @@ const EditorField = connect(
   mapDispatchToProps
 )(EditorFieldComponent);
 
+// $FlowFixMe
 EditorField.Field = connect(
   null,
   mapDispatchToProps
