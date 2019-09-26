@@ -17,14 +17,15 @@ import formStyles from 'app/components/Form/Field.css';
 import moment from 'moment-timezone';
 import { paymentSuccess, paymentManual } from '../utils';
 import { registrationIsClosed } from '../utils';
+import type { User, EventRegistration } from 'app/models';
 
 type Event = Object;
 
 export type Props = {
   title?: string,
   event: Event,
-  registration: ?Object,
-  currentUser: Object,
+  registration: ?EventRegistration,
+  currentUser: User,
   onSubmit: Object => void,
   createPaymentIntent: () => Promise<*>,
 
@@ -91,6 +92,32 @@ const SubmitButton = ({
     </ConfirmModalWithParent>
   );
 };
+
+const PaymentForm = ({
+  createPaymentIntent,
+  event,
+  currentUser,
+  registration
+}: {
+  createPaymentIntent: () => Promise<*>,
+  event: Event,
+  currentUser: User,
+  registration: EventRegistration
+}) => (
+  <div style={{ width: '100%' }}>
+    <div className={styles.joinHeader}>Betaling</div>
+    <div className={styles.eventPrice}>
+      Du skal betale {event.price / 100},-
+    </div>
+    <PaymentRequestForm
+      createPaymentIntent={createPaymentIntent}
+      event={event}
+      currentUser={currentUser}
+      paymentStatus={registration.paymentStatus}
+      clientSecret={registration.clientSecret}
+    />
+  </div>
+);
 
 const SpotsLeft = ({ activeCapacity, spotsLeft }: SpotsLeftProps) => {
   // If the pool has infinite capacity or spotsLeft isn't calculated don't show the message
@@ -169,21 +196,22 @@ class JoinEventForm extends Component<Props> {
     const showCaptcha =
       !submitting && !registration && captchaOpen && event.useCaptcha;
     const showStripe =
+      event.useStripe &&
       event.isPriced &&
       event.price > 0 &&
       registration &&
       registration.pool &&
-      ![paymentManual, paymentSuccess].includes(registration.chargeStatus);
+      ![paymentManual, paymentSuccess].includes(registration.paymentStatus);
 
     if (registrationIsClosed(event)) {
       return (
         <>
           {!formOpen && registration && showStripe && (
-            <PaymentRequestForm
+            <PaymentForm
               createPaymentIntent={createPaymentIntent}
               event={event}
               currentUser={currentUser}
-              chargeStatus={registration.chargeStatus}
+              registration={registration}
             />
           )}
         </>
@@ -308,18 +336,12 @@ class JoinEventForm extends Component<Props> {
                     )}
                   </Form>
                   {registration && showStripe && (
-                    <div style={{ width: '100%' }}>
-                      <div className={styles.joinHeader}>Betaling</div>
-                      <div className={styles.eventPrice}>
-                        Du skal betale {event.price / 100},-
-                      </div>
-                      <PaymentRequestForm
-                        createPaymentIntent={createPaymentIntent}
-                        event={event}
-                        currentUser={currentUser}
-                        chargeStatus={registration.chargeStatus}
-                      />
-                    </div>
+                    <PaymentForm
+                      event={event}
+                      createPaymentIntent={createPaymentIntent}
+                      currentUser={currentUser}
+                      registration={registration}
+                    />
                   )}
                 </Flex>
               )}

@@ -50,6 +50,7 @@ import readme from './readme';
 import surveySubmissions from './surveySubmissions';
 import tags from './tags';
 import fetchHistory from './fetchHistory';
+import payments from './payments';
 import { User } from '../actions/ActionTypes';
 import joinReducers from 'app/utils/joinReducers';
 import type { State, Action } from 'app/types';
@@ -100,7 +101,8 @@ const reducers = {
   surveys,
   tags,
   toasts,
-  users
+  users,
+  payments
 };
 
 export type Reducers = typeof reducers;
