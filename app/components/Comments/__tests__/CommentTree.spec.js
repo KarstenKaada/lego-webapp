@@ -7,6 +7,9 @@ import { generateTreeStructure } from '../../../utils';
 
 describe('<CommentTree />', () => {
   beforeAll(() => {
+    // jest does not implement this function, so we just
+    // stub it out. (this function is used by the editor, so it will
+    // have no impact on these tests)
     window.getSelection = () => {};
   });
   const tree = generateTreeStructure(comments);

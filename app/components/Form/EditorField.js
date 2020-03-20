@@ -29,19 +29,30 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+class NoSSRError {
+  error: Error;
+  constructor(msg) {
+    this.error = new Error(msg);
+  }
+}
+
 const EditorFieldComponent = ({
   className,
   name,
   uploadFile,
   ...props
 }: Props) => {
+  if (!__CLIENT__) {
+    throw new NoSSRError('Cannot SSR editor');
+  }
+
   return (
     <div name={name}>
       <Editor
         className={cx(styles.input, className)}
         {...props}
-        {...props.input}
         {...props.meta}
+        {...props.input}
         imageUpload={uploadFile}
       />
     </div>
@@ -57,6 +68,6 @@ const EditorField = connect(
 EditorField.Field = connect(
   null,
   mapDispatchToProps
-)(createField(EditorFieldComponent, false));
+)(createField(EditorFieldComponent, { noLabel: true }));
 
 export default EditorField;
