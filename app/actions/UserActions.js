@@ -12,7 +12,7 @@ import { User, FetchHistory, Penalty } from './ActionTypes';
 import { uploadFile } from './FileActions';
 import { fetchMeta } from './MetaActions';
 import type { Thunk, Action, Token, EncodedToken, GetCookie } from 'app/types';
-import type { AddPenalty, ID } from 'app/models';
+import type { AddPenalty, ID, PhotoConsentModel } from 'app/models';
 import { setStatusCode } from './RoutingActions';
 
 const USER_STORAGE_KEY = 'lego.auth';
@@ -188,6 +188,25 @@ export function changeGrade(groupId: ID, username: string): Thunk<*> {
     meta: {
       errorMessage: 'Oppdatering av klasse feilet',
       successMessage: 'Klasse endret'
+    }
+  });
+}
+
+export function updatePhotoConsent(photoConsent: PhotoConsentModel): Thunk<*> {
+  const { semester, domain, isConsenting } = photoConsent;
+  return callAPI({
+    types: User.UPDATE,
+    endpoint: `/users/update_photo_consent/`,
+    method: 'POST',
+    body: {
+      semester: semester,
+      domain: domain,
+      isConsenting: isConsenting
+    },
+    schema: userSchema,
+    meta: {
+      errorMessage: 'Endring av bildesamtykke feilet',
+      successMessage: 'Bildesamtykke endret'
     }
   });
 }

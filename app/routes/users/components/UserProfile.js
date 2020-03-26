@@ -10,19 +10,26 @@ import Pill from 'app/components/Pill';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import Feed from 'app/components/Feed';
 import Penalties from './Penalties';
-import PhotoConsent from './PhotoConsent';
+import PhotoConsent from './PhotoConsent.js';
 import GroupChange from './GroupChange.js';
 import styles from './UserProfile.css';
 import { Flex } from 'app/components/Layout';
 import Tooltip from 'app/components/Tooltip';
 import { groupBy, orderBy } from 'lodash';
 import { resolveGroupLink } from 'app/reducers/groups';
-import type { Group, AddPenalty, Event, ID } from 'app/models';
+import type {
+  Group,
+  AddPenalty,
+  Event,
+  ID,
+  DetailedPhotoConsentModel,
+  NewPhotoConsent
+} from 'app/models';
 import cx from 'classnames';
 import EventItem from 'app/components/EventItem';
 import EmptyState from 'app/components/EmptyState';
 import moment from 'moment-timezone';
-import type { Dateish } from 'app/models';
+import type { Dateish, PhotoConsentModel } from 'app/models';
 import { Image } from 'app/components/Image';
 import frame from 'app/assets/frame.png';
 
@@ -67,7 +74,10 @@ type Props = {
   canDeletePenalties: boolean,
   groups: Array<Group>,
   canChangeGrade: boolean,
-  changeGrade: (ID, string) => Promise<*>
+  changeGrade: (ID, string) => Promise<*>,
+  updatePhotoConsent: PhotoConsentModel => Promise<*>,
+  detailedPhotoConsents: DetailedPhotoConsentModel,
+  undefinedPhotoConsents: NewPhotoConsent
 };
 
 type EventsProps = {
@@ -199,7 +209,10 @@ export default class UserProfile extends Component<Props, EventsProps> {
       canDeletePenalties,
       groups,
       canChangeGrade,
-      changeGrade
+      changeGrade,
+      updatePhotoConsent,
+      detailedPhotoConsents,
+      undefinedPhotoConsents
     } = this.props;
 
     //If you wonder what this is, ask somebody
@@ -210,7 +223,8 @@ export default class UserProfile extends Component<Props, EventsProps> {
       abakusGroups = [],
       firstName,
       lastName,
-      memberships = []
+      memberships = [],
+      photoConsents
     } = user;
 
     const { membershipsAsBadges = [], membershipsAsPills = [] } = groupBy(
@@ -299,13 +313,18 @@ export default class UserProfile extends Component<Props, EventsProps> {
                 </Card>
               </div>
             )}
-
-            <div>
-              <h3>Bildesamtykke</h3>
-              <Card>
-                <PhotoConsent />
-              </Card>
-            </div>
+            {detailedPhotoConsents && undefinedPhotoConsents && (
+              <div>
+                <h3>Bildesamtykke</h3>
+                <Card>
+                  <PhotoConsent
+                    photoConsents={photoConsents}
+                    undefinedPhotoConsents={undefinedPhotoConsents}
+                    updatePhotoConsent={updatePhotoConsent}
+                  />
+                </Card>
+              </div>
+            )}
 
             {canChangeGrade && (
               <div>
