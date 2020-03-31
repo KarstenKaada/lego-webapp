@@ -23,7 +23,7 @@ import {
   penaltyHours
 } from '../utils';
 import { registrationIsClosed } from '../utils';
-import { selectUserWithGroups } from 'app/reducers/users';
+import { selectUserByUsername } from 'app/reducers/users';
 import { selectPenaltyByUserId } from 'app/reducers/penalties';
 
 type Event = Object;
@@ -380,7 +380,7 @@ function mapStateToProps(state, { event, registration }) {
     };
   }
   const user = state.auth
-    ? selectUserWithGroups(state, { username: state.auth.username })
+    ? selectUserByUsername(state, { username: state.auth.username })
     : null;
   const penalties = user
     ? selectPenaltyByUserId(state, { userId: user.id })
